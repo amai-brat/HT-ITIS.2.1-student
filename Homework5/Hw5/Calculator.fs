@@ -9,17 +9,23 @@ type CalculatorOperation =
      | Divide = 3
 
 [<Literal>] 
-let plus = "+"
+let PLUS = "+"
 
 [<Literal>] 
-let minus = "-"
+let MINUS = "-"
 
 [<Literal>] 
-let multiply = "*"
+let MULTIPLY = "*"
 
 [<Literal>] 
-let divide = "/"
+let DIVIDE = "/"
 
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let inline calculate value1 operation value2: 'a =
-    (NotImplementedException() |> raise)
+    match operation with
+    | CalculatorOperation.Plus -> value1 + value2
+    | CalculatorOperation.Minus -> value1 - value2
+    | CalculatorOperation.Multiply -> value1 * value2
+    | CalculatorOperation.Divide -> value1 / value2
+
+    
