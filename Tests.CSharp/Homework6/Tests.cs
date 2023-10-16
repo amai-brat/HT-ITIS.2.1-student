@@ -86,6 +86,41 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<App.Startup>
         await RunTest("15.6", "0", "Divide", "DivideByZero", HttpStatusCode.OK, true);
     }
 
+    [Homework(Homeworks.HomeWork6)]
+    public async Task TestQueryWithWrongNumberOfValues()
+    {
+        // arrange
+        var url = "/calculate?value1=0&value2=0";
+
+        // act
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync(url);
+        var result = await response.Content.ReadAsStringAsync();
+        
+        // assert
+        Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
+        Assert.Contains("Wrong amount of arguments: 2. Needed: 3", result);
+    }
+
+    [HomeworkTheory(Homeworks.HomeWork6)]
+    [InlineData("val1", "operation", "value2", "Could not find parameter 'value1'")]
+    [InlineData("value1", "op", "value2", "Could not find parameter 'operation'")]
+    [InlineData("value1", "operation", "val2", "Could not find parameter 'value2'")]
+    public async Task TestQueryWithWrongKeys(string firstValueKey, string operationKey, 
+        string secondValueKey, string expectedError)
+    {
+        // arrange
+        var url = $"/calculate?{firstValueKey}=0&{operationKey}=Plus&{secondValueKey}=0";
+        
+        // act
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync(url);
+        var result = await response.Content.ReadAsStringAsync();
+        
+        // assert
+        Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
+        Assert.Contains(expectedError, result);
+    }
     private async Task RunTest(string value1, string value2, string operation, string expectedValueOrError,
         HttpStatusCode statusCode, bool isDividingByZero = false)
     {

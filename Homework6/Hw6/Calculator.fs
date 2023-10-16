@@ -11,6 +11,7 @@ let convertMessageToString (message: (Message * string)): string =
     | Message.NotFoundQueryParameter, param -> $"Could not find parameter '{param}'"
     | _ -> ""
 
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let inline calculate (request: HttpRequest): Result<string, string> =
     let parsed = Parser.parseCalcArguments request
     match parsed with
