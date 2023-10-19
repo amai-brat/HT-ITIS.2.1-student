@@ -10,7 +10,7 @@ open Giraffe
 
 let calculatorHandler: HttpHandler =
     fun next ctx ->
-        let result: Result<string, string> = raise(NotImplementedException())
+        let result: Result<string, string> = Calculator.calculate ctx.Request 
 
         match result with
         | Ok ok -> (setStatusCode 200 >=> text (ok.ToString())) next ctx
@@ -20,6 +20,7 @@ let webApp =
     choose [
         GET >=> choose [
              route "/" >=> text "Use //calculate?value1=<VAL1>&operation=<OPERATION>&value2=<VAL2>"
+             route "/calculate" >=> calculatorHandler
         ]
         setStatusCode 404 >=> text "Not Found" 
     ]
