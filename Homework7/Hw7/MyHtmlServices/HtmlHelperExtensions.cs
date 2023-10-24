@@ -7,6 +7,10 @@ public static class HtmlHelperExtensions
 {
     public static IHtmlContent MyEditorForModel(this IHtmlHelper helper)
     {
-        throw new NotImplementedException();
+        var model = helper.ViewData.Model;
+        var modelType = helper.ViewData.ModelMetadata.ModelType;
+        return MyEditorForModelCreator.CreateHtmlContent(modelType, model!);
     }
+
+    
 } 
