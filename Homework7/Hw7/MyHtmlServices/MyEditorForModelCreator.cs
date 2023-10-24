@@ -68,8 +68,7 @@ public static class MyEditorForModelCreator
     private static IHtmlContent CreateSelect(PropertyInfo property)
     {
         var select = new TagBuilder("select");
-        if (!property.PropertyType.IsEnum)
-            return select;
+        
         foreach (var enumName in property.PropertyType.GetEnumNames())
         {
             var option = new TagBuilder("option");
