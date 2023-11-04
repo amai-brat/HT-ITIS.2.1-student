@@ -18,11 +18,10 @@ public class CalculatorController : Controller
         var message = parser.TryParseArguments(val1, operation, val2, out var result);
         return message switch
         {
-            Messages.Ok => Ok(calculator.Calculate(result.FirstValue, result.Operation, result.SecondValue)),
             DivisionByZeroMessage => BadRequest(DivisionByZeroMessage),
             InvalidNumberMessage => BadRequest(InvalidNumberMessage),
             InvalidOperationMessage => BadRequest(InvalidOperationMessage),
-            _ => StatusCode(500, "Ошибка сервера")
+            _ => Ok(calculator.Calculate(result.FirstValue, result.Operation, result.SecondValue))
         };
     }
     
