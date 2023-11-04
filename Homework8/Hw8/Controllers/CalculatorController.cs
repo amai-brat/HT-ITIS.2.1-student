@@ -1,18 +1,29 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using Hw8.Calculator;
+using Hw8.Parser;
 using Microsoft.AspNetCore.Mvc;
+using static Hw8.Calculator.Messages;
 
 namespace Hw8.Controllers;
 
 public class CalculatorController : Controller
 {
-    public ActionResult<double> Calculate([FromServices] ICalculator calculator,
+    public ActionResult<double> Calculate(
+        [FromServices] ICalculator calculator,
+        [FromServices] IParser parser,
         string val1,
         string operation,
         string val2)
     {
-        throw new NotImplementedException();
+        var message = parser.TryParseArguments(val1, operation, val2, out var result);
+        return message switch
+        {
+            Messages.Ok => Ok(calculator.Calculate(result.FirstValue, result.Operation, result.SecondValue)),
+            DivisionByZeroMessage => BadRequest(DivisionByZeroMessage),
+            InvalidNumberMessage => BadRequest(InvalidNumberMessage),
+            InvalidOperationMessage => BadRequest(InvalidOperationMessage),
+            _ => StatusCode(500, "Ошибка сервера")
+        };
     }
     
     [ExcludeFromCodeCoverage]
