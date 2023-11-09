@@ -52,4 +52,13 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Hw8.Program>
         var actual = await response.Content.ReadAsStringAsync();
         Assert.Equal(expected, actual);
     }
+
+    [Homework(Homeworks.HomeWork8)]
+    public async Task Calculate_NoOperation_InvalidOperationMessageReturned()
+    {
+        var response =
+            await _client.GetAsync($"{_url}/Calculator/Calculate?val1=5&val2=5");
+        var actual = await response.Content.ReadAsStringAsync();
+        Assert.Equal(Messages.InvalidOperationMessage, actual);
+    }
 }
