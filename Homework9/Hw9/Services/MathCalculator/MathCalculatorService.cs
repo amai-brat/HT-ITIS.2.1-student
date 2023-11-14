@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Text;
@@ -61,13 +62,20 @@ public class MathCalculatorService : IMathCalculatorService
         });
 
         var result = await Task.WhenAll(leftTask, rightTask);
-        return current.NodeType switch
+        return Calculate(result[0], current.NodeType, result[1]);
+
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static double Calculate(double arg1, ExpressionType type, double arg2)
+    {
+        return type switch
         {
-            ExpressionType.Add => result[0] + result[1],
-            ExpressionType.Subtract => result[0] - result[1],
-            ExpressionType.Multiply => result[0] * result[1],
-            ExpressionType.Divide when Math.Abs(result[1]) < double.Epsilon => double.NaN,
-            ExpressionType.Divide => result[0] / result[1],
+            ExpressionType.Add => arg1 + arg2,
+            ExpressionType.Subtract => arg1 - arg2,
+            ExpressionType.Multiply => arg1 * arg2,
+            ExpressionType.Divide when Math.Abs(arg2) < double.Epsilon => double.NaN,
+            ExpressionType.Divide => arg1 / arg2,
             _ => throw new InvalidOperationException("That expression type isn't supported")
         };
     }

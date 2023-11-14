@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using Hw9.ErrorMessages;
 
@@ -43,6 +44,7 @@ public class MyTokenParser : ITokenParser
         return new Token(TokenType.Number, input[startPos..position--]);
     }
 
+    [ExcludeFromCodeCoverage]
     private Token ParseOperation(string input, int pos)
     {
         return input[pos] switch
@@ -57,6 +59,7 @@ public class MyTokenParser : ITokenParser
         };
     }
 
+    [ExcludeFromCodeCoverage]
     private Token ParseBracket(string input, int pos)
     {
         return input[pos] switch
