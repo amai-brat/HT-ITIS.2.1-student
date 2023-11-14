@@ -110,7 +110,7 @@ public class MyValidator : IValidator
             }
         }
 
-        if (stack.TryPeek(out var lastSymbol) && _operations.Contains(lastSymbol))
+        if (_operations.Contains(stack.Pop()))
         {
             _errors.Add(MathErrorMessager.EndingWithOperation);
             return false;

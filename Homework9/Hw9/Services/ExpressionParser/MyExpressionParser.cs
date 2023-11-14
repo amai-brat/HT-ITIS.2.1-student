@@ -22,8 +22,8 @@ public class MyExpressionParser : IExpressionParser
             
             if (token.IsOperation)
             {
-                while (stack.TryPeek(out var last) && last.Priority >= token.Priority && 
-                       (last.Type == TokenType.Negate || last.Type != TokenType.Negate && expStack.Count > 1))
+                while (stack.Count > 0 && stack.Peek().Priority >= token.Priority && 
+                       (stack.Peek().Type == TokenType.Negate || stack.Peek().Type != TokenType.Negate && expStack.Count > 1))
                 {
                     PushOperation(stack.Pop(), expStack);
                 }
