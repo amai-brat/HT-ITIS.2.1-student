@@ -22,10 +22,20 @@ public class MyExpressionParser : IExpressionParser
             
             if (token.IsOperation)
             {
-                while (stack.Count > 0 && stack.Peek().Priority >= token.Priority && 
-                       (stack.Peek().Type == TokenType.Negate || stack.Peek().Type != TokenType.Negate && expStack.Count > 1))
+                while (stack.TryPeek(out var last) && last.Priority >= token.Priority)
                 {
-                    PushOperation(stack.Pop(), expStack);
+                    if (last.Type == TokenType.Negate)
+                    {
+                        PushOperation(stack.Pop(), expStack);
+                    }
+                    else if (expStack.Count > 1)
+                    {
+                        PushOperation(stack.Pop(), expStack);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 stack.Push(token);
                 continue;
@@ -39,9 +49,16 @@ public class MyExpressionParser : IExpressionParser
 
             if (token.Type == TokenType.CloseBracket)
             {
-                while (stack.TryPeek(out var last) && last.Type != TokenType.OpenBracket)
+                while (stack.TryPeek(out var last))
                 {
-                    PushOperation(stack.Pop(), expStack);
+                    if (last.Type != TokenType.OpenBracket)
+                    {
+                        PushOperation(stack.Pop(), expStack);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 
                 stack.Pop();
