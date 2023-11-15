@@ -43,11 +43,16 @@ public class MathCalculatorService : IMathCalculatorService
             : new CalculationMathExpressionResultDto(result);
     }
     
-    private async Task<double> CalculateAsync(Expression current, Dictionary<Expression, Tuple<Expression, Expression>> executeBefore)
+    private async Task<double> CalculateAsync(Expression current, Dictionary<Expression, Tuple<Expression, Expression?>> executeBefore)
     {
         if (!executeBefore.ContainsKey(current))
         {
             return double.Parse(current.ToString(), CultureInfo.InvariantCulture);
+        }
+
+        if (executeBefore[current].Item2 == null)
+        {
+            return -1 * await CalculateAsync(executeBefore[current].Item1, executeBefore);
         }
 
         var leftTask = Task.Run(async () =>
@@ -58,7 +63,7 @@ public class MathCalculatorService : IMathCalculatorService
         var rightTask = Task.Run(async () =>
         {
             await Task.Delay(1000);
-            return await CalculateAsync(executeBefore[current].Item2, executeBefore);
+            return await CalculateAsync(executeBefore[current].Item2!, executeBefore);
         });
 
         var result = await Task.WhenAll(leftTask, rightTask);

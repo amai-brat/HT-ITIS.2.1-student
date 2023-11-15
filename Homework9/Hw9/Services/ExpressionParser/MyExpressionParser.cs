@@ -32,10 +32,6 @@ public class MyExpressionParser : IExpressionParser
                     {
                         PushOperation(stack.Pop(), expStack);
                     }
-                    else
-                    {
-                        break;
-                    }
                 }
                 stack.Push(token);
                 continue;
