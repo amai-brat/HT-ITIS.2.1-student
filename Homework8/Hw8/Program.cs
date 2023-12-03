@@ -11,6 +11,12 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddMiniProfiler(options =>
+        {
+            options.RouteBasePath = "/profiler";
+            options.ColorScheme = StackExchange.Profiling.ColorScheme.Dark;
+        });
+        
         builder.Services.AddControllersWithViews();
         builder.Services.AddSingleton<IParser, MyParser>();
         builder.Services.AddSingleton<ICalculator, MyCalculator>();
@@ -23,6 +29,8 @@ public class Program
             app.UseHsts();
         }
 
+        app.UseMiniProfiler();
+        
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
